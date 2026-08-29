@@ -14,13 +14,13 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "equipament")
-public class EquipamentEntity extends BaseEntity {
+@Table(name = "equipment")
+public class EquipmentEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 500)
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -36,6 +36,9 @@ public class EquipamentEntity extends BaseEntity {
 
     @Column(name = "hourly_price", precision = 10, scale = 2)
     private BigDecimal hourlyPrice;
+
+    @Column(name = "total_quantity", nullable = false)
+    private int totalQuantity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -16,7 +16,7 @@ public class ClientEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 500)
     private String description;
 
     @Enumerated(EnumType.STRING)

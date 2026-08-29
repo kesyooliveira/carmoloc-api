@@ -22,8 +22,8 @@ public class RentalOrderItemEntity extends BaseEntity {
     private RentalOrderEntity rentalOrder;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "equipament_id", nullable = false)
-    private EquipamentEntity equipament;
+    @JoinColumn(name = "equipment_id", nullable = false)
+    private EquipmentEntity equipament;
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
