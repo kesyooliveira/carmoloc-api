@@ -1,8 +1,8 @@
 package com.br.kesyo.carmoloc_api.enums;
 
-public enum EquipamentStatusEnum {
+public enum EquipmentUnitStatusEnum {
+    //Status de cada unidade
     AVAILABLE,
-    RENTED,
     MAINTENANCE,
     RETIRED
 }
