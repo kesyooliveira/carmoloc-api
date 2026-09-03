@@ -1,0 +1,46 @@
+package com.br.kesyo.carmoloc_api.controllers.advice;
+
+import com.br.kesyo.carmoloc_api.exceptions.ClientNotFoundException;
+import com.br.kesyo.carmoloc_api.exceptions.DuplicateDocumentException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.Instant;
+import java.util.List;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ClientNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleNotFound(RuntimeException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(DuplicateDocumentException.class)
+    public ResponseEntity<ErrorResponseDTO> handleConflict(RuntimeException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDTO> handleValidation(MethodArgumentNotValidException ex) {
+        List<String> details = ex.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .toList();
+        return buildResponse(HttpStatus.BAD_REQUEST, "Validation failed", details);
+    }
+
+    private ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus status, String message, List<String> details) {
+        ErrorResponseDTO body = ErrorResponseDTO.builder()
+            .timestamp(Instant.now())
+            .status(status.value())
+            .error(status.getReasonPhrase())
+            .message(message)
+            .details(details)
+            .build();
+        return ResponseEntity.status(status).body(body);
+    }
+}
