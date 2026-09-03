@@ -24,7 +24,7 @@ public abstract class BaseEntity implements Serializable{
     private Instant updatedAt;
 
     @Column(nullable = false)
-    private boolean active;
+    private boolean active = true;
 
     @PrePersist
     protected void onCreate() {
