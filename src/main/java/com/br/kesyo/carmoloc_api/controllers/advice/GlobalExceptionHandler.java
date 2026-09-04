@@ -1,7 +1,6 @@
 package com.br.kesyo.carmoloc_api.controllers.advice;
 
-import com.br.kesyo.carmoloc_api.exceptions.ClientNotFoundException;
-import com.br.kesyo.carmoloc_api.exceptions.DuplicateDocumentException;
+import com.br.kesyo.carmoloc_api.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -31,6 +30,16 @@ public class GlobalExceptionHandler {
                 .map(FieldError::getDefaultMessage)
                 .toList();
         return buildResponse(HttpStatus.BAD_REQUEST, "Validation failed", details);
+    }
+
+    @ExceptionHandler({EquipmentNotFoundException.class, EquipmentUnitNotFoundException.class})
+    public ResponseEntity<ErrorResponseDTO> handleEquipmentNotFound(RuntimeException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler({InvalidPricingConfigurationException.class, InvalidAssetCodeListException.class})
+    public ResponseEntity<ErrorResponseDTO> handleEquipmentBadRequest(RuntimeException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), null);
     }
 
     private ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus status, String message, List<String> details) {
