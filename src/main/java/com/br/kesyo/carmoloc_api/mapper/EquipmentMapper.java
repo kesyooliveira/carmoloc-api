@@ -16,7 +16,7 @@ public class EquipmentMapper {
         return entity;
     }
 
-    private static void applyToEntity(EquipmentRequestDTO dto, EquipmentEntity entity) {
+    public static void applyToEntity(EquipmentRequestDTO dto, EquipmentEntity entity) {
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
         entity.setCategory(dto.getCategory());
