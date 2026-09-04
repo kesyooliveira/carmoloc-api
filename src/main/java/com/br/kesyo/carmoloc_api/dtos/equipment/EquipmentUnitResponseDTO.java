@@ -1,6 +1,6 @@
 package com.br.kesyo.carmoloc_api.dtos.equipment;
 
-import com.br.kesyo.carmoloc_api.enums.EquipmentStatusEnum;
+import com.br.kesyo.carmoloc_api.enums.EquipmentUnitStatusEnum;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,6 +12,6 @@ public class EquipmentUnitResponseDTO {
 
     private UUID id;
     private String assetCode;
-    private EquipmentStatusEnum status;
+    private EquipmentUnitStatusEnum status;
     private String maintenanceNote;
 }
