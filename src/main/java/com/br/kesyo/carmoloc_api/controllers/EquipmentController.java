@@ -1,5 +1,6 @@
 package com.br.kesyo.carmoloc_api.controllers;
 
+import com.br.kesyo.carmoloc_api.dtos.equipment.AddEquipmentUnitsRequestDTO;
 import com.br.kesyo.carmoloc_api.dtos.equipment.EquipmentRequestDTO;
 import com.br.kesyo.carmoloc_api.dtos.equipment.EquipmentResponseDTO;
 import com.br.kesyo.carmoloc_api.dtos.equipment.EquipmentUnitResponseDTO;
@@ -66,6 +67,20 @@ public class EquipmentController {
         return ResponseEntity.ok(
             this.equipmentService.updateUnitStatus(unitId, request.getStatus(), request.getMaintenanceNote())
         );
+    }
+
+    @PostMapping("/{id}/units")
+    public ResponseEntity<List<EquipmentUnitResponseDTO>> addUnits(
+        @PathVariable UUID id,
+        @Valid @RequestBody AddEquipmentUnitsRequestDTO request
+    ) {
+        List<EquipmentUnitResponseDTO> created = this.equipmentService.addUnits(
+            id, request.getQuantity(), request.getAssetCodes()
+        );
+
+        return ResponseEntity
+            .created(URI.create("/api/equipment" + id + "/units"))
+            .body(created);
     }
 
     @Getter

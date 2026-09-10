@@ -114,7 +114,14 @@ public class EquipmentServiceImpl implements EquipmentService {
     public void delete(UUID id) {
         EquipmentEntity entity = this.findEntityById(id);
         entity.setActive(false);
+
+        List<EquipmentUnitEntity> units = this.equipmentUnitRepository.findByEquipmentIdAndActiveTrue(id);
+        units.forEach(unit -> unit.setActive(false));
+
         this.equipmentRepository.save(entity);
+        if (!units.isEmpty()) {
+            this.equipmentUnitRepository.saveAll(units);
+        }
     }
 
     @Override
@@ -138,6 +145,31 @@ public class EquipmentServiceImpl implements EquipmentService {
 
         EquipmentUnitEntity saved = this.equipmentUnitRepository.save(unit);
         return EquipmentMapper.toUnitResponseDTO(saved);
+    }
+
+    @Override
+    @Transactional
+    public List<EquipmentUnitResponseDTO> addUnits(UUID equipmentId, Integer quantity, List<String> assetCodes) {
+        EquipmentEntity equipment = this.findEntityById(equipmentId);
+
+        List<String> codes = this.resolverAssetCodesForAddition(equipment, quantity, assetCodes);
+        this.createUnits(equipment, codes);
+
+        return this.findUnitsByEquipmentId(equipmentId);
+    }
+
+    private List<String> resolverAssetCodesForAddition(EquipmentEntity equipment, Integer quantity, List<String> assetCodes) {
+        if (assetCodes == null || assetCodes.isEmpty()) {
+            return this.assetCodeGenerator.generate(equipment.getCategory(), quantity);
+        }
+
+        if (assetCodes.size() != quantity) {
+            throw new InvalidAssetCodeListException(
+                "A quantidade de assetCodes informados (%d) não bate com quantity (%d)"
+                    .formatted(assetCodes.size(), quantity));
+        }
+
+        return assetCodes;
     }
 
     private EquipmentResponseDTO toResponseDTO(EquipmentEntity entity) {

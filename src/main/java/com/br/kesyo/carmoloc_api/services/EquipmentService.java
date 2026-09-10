@@ -22,5 +22,7 @@ public interface EquipmentService {
 
     List<EquipmentUnitResponseDTO> findUnitsByEquipmentId(UUID equipmentId);
 
+    List<EquipmentUnitResponseDTO> addUnits(UUID equipmentId, Integer quantity, List<String> assetCodes);
+
     EquipmentUnitResponseDTO updateUnitStatus(UUID unitId, EquipmentUnitStatusEnum status, String maintenanceNote);
 }

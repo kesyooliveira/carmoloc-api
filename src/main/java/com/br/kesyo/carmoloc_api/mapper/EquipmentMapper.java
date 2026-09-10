@@ -44,6 +44,7 @@ public class EquipmentMapper {
     public static EquipmentUnitResponseDTO toUnitResponseDTO(EquipmentUnitEntity entity) {
         return EquipmentUnitResponseDTO.builder()
             .id(entity.getId())
+            .createdAt(entity.getCreatedAt())
             .assetCode(entity.getAssetCode())
             .status(entity.getStatus())
             .maintenanceNote(entity.getMaintenanceNote())
