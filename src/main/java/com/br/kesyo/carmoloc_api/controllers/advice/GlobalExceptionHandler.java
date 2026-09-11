@@ -42,6 +42,21 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), null);
     }
 
+    @ExceptionHandler(RentalOrderNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleRentalOrderNotFound(RuntimeException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(InsufficientAvailabilityException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInsufficientAvailability(RuntimeException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler({InvalidOrderStatusTransitionException.class, InvalidRentalPeriodException.class})
+    public ResponseEntity<ErrorResponseDTO> handleRentalOrderBadRequest(RuntimeException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), null);
+    }
+
     private ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus status, String message, List<String> details) {
         ErrorResponseDTO body = ErrorResponseDTO.builder()
             .timestamp(Instant.now())
