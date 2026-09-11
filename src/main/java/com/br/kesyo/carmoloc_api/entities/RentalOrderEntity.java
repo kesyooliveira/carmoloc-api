@@ -3,11 +3,9 @@ package com.br.kesyo.carmoloc_api.entities;
 import com.br.kesyo.carmoloc_api.common.BaseEntity;
 import com.br.kesyo.carmoloc_api.enums.RentalOrderStatusEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

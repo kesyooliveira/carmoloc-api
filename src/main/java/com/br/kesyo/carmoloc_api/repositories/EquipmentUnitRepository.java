@@ -2,7 +2,6 @@ package com.br.kesyo.carmoloc_api.repositories;
 
 import com.br.kesyo.carmoloc_api.entities.EquipmentUnitEntity;
 import com.br.kesyo.carmoloc_api.enums.EquipmentCategoryEnum;
-import com.br.kesyo.carmoloc_api.enums.EquipmentStatusEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
