@@ -2,6 +2,7 @@ package com.br.kesyo.carmoloc_api.repositories;
 
 import com.br.kesyo.carmoloc_api.entities.EquipmentEntity;
 import com.br.kesyo.carmoloc_api.enums.EquipmentCategoryEnum;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface EquipmentRepository extends JpaRepository<EquipmentEntity, UUID
     List<EquipmentEntity> findByActiveTrue();
 
     List<EquipmentEntity> findByCategoryAndActiveTrue(EquipmentCategoryEnum category);
+
+    boolean existsById(@NonNull UUID id);
 }

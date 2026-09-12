@@ -12,6 +12,7 @@ import com.br.kesyo.carmoloc_api.exceptions.*;
 import com.br.kesyo.carmoloc_api.mapper.RentalOrderMapper;
 import com.br.kesyo.carmoloc_api.repositories.ClientRepository;
 import com.br.kesyo.carmoloc_api.repositories.EquipmentRepository;
+import com.br.kesyo.carmoloc_api.repositories.EquipmentUnitRepository;
 import com.br.kesyo.carmoloc_api.repositories.RentalOrderRepository;
 import com.br.kesyo.carmoloc_api.services.AvailabilityService;
 import com.br.kesyo.carmoloc_api.services.RentalOrderService;
@@ -30,12 +31,22 @@ public class RentalOrderServiceImpl implements RentalOrderService {
     private final ClientRepository clientRepository;
     private final EquipmentRepository equipmentRepository;
     private final AvailabilityService availabilityService;
+    private final EquipmentUnitRepository equipmentUnitRepository;
 
     @Override
     @Transactional
     public RentalOrderResponseDTO create(RentalOrderRequestDTO request) {
         ClientEntity client = this.clientRepository.findById(request.getClientId())
             .orElseThrow(() -> new ClientNotFoundException(request.getClientId()));
+
+        for (RentalOrderItemRequestDTO itemRequest : request.getItems()) {
+            if (!this.equipmentRepository.existsById(itemRequest.getEquipmentId())) throw new EquipmentNotFoundException(itemRequest.getEquipmentId());
+
+            int availableUnits = this.equipmentUnitRepository.countAvailableUnits(itemRequest.getEquipmentId());
+            if (availableUnits < itemRequest.getQuantity()) {
+                throw new NotEnoughEquipmentUnitsException(itemRequest.getEquipmentId(), itemRequest.getQuantity(), availableUnits);
+            }
+        }
 
         RentalOrderEntity order = new RentalOrderEntity();
         order.setClient(client);
@@ -63,6 +74,7 @@ public class RentalOrderServiceImpl implements RentalOrderService {
         item.setDailyPriceSnapshot(equipment.getDailyPrice());
         item.setHalfDayPriceSnapshot(equipment.getHalfDayPrice());
         item.applyRentalPeriod(itemRequest.getStartDateTime(), itemRequest.getEndDateTime());
+        item.calculateSubtotal();
 
         return item;
     }

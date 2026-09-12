@@ -57,6 +57,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), null);
     }
 
+    @ExceptionHandler(NotEnoughEquipmentUnitsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleNotEnoughEquipmentUnits(RuntimeException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), null);
+    }
+
     private ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus status, String message, List<String> details) {
         ErrorResponseDTO body = ErrorResponseDTO.builder()
             .timestamp(Instant.now())
