@@ -68,6 +68,10 @@ public class RentalOrderServiceImpl implements RentalOrderService {
         EquipmentEntity equipment = this.equipmentRepository.findById(itemRequest.getEquipmentId())
             .orElseThrow(() -> new EquipmentNotFoundException(itemRequest.getEquipmentId()));
 
+        if (!equipment.isAvailableForRental()) {
+            throw new EquipmentNotAvailableException(equipment.getId(), equipment.getStatus());
+        }
+
         RentalOrderItemEntity item = new RentalOrderItemEntity();
         item.setEquipment(equipment);
         item.setQuantity(itemRequest.getQuantity());
@@ -90,6 +94,24 @@ public class RentalOrderServiceImpl implements RentalOrderService {
             throw new InvalidOrderStatusTransitionException(
                 "Só é possível confirmar uma ordem em cotação (status atual: %s)".formatted(order.getStatus())
             );
+        }
+
+        // Trava as linhas de equipamento envolvidas ANTES de checar disponibilidade,
+        // em ordem determinística de id, pra evitar deadlock entre confirmações concorrentes
+        // que envolvam múltiplos equipamentos em ordens diferentes.
+        List<UUID> equipmentIds = order.getItems().stream()
+            .map(item -> item.getEquipment().getId())
+            .distinct()
+            .sorted()
+            .toList();
+
+        for (UUID equipmentId : equipmentIds) {
+            EquipmentEntity equipment = this.equipmentRepository.findByIdForUpdate(equipmentId)
+                .orElseThrow(() -> new EquipmentNotFoundException(equipmentId));
+
+            if (!equipment.isAvailableForRental()) {
+                throw new EquipmentNotAvailableException(equipment.getId(), equipment.getStatus());
+            }
         }
 
         for (RentalOrderItemEntity item : order.getItems()) {

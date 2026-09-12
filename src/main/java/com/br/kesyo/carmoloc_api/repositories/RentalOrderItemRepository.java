@@ -24,4 +24,12 @@ public interface RentalOrderItemRepository extends JpaRepository<RentalOrderItem
         @Param("startDateTime") LocalDateTime startDateTime,
         @Param("endDateTime") LocalDateTime endDateTime
     );
+
+    @Query("""
+        SELECT COUNT(i) > 0
+        FROM RentalOrderItemEntity i
+        WHERE i.equipment.id = :equipmentId
+        AND i.rentalOrder.status = "ACTIVE"
+    """)
+    boolean existsActiveRentalFotEquipment(@Param("equipmentId") UUID equipmentId);
 }

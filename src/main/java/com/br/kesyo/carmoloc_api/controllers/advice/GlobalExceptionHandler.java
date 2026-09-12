@@ -62,6 +62,16 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), null);
     }
 
+    @ExceptionHandler(EquipmentNotAvailableException.class)
+    public ResponseEntity<ErrorResponseDTO> handleEquipmentNotAvailable(RuntimeException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(EquipmentHasActiveRentalOrdersException.class)
+    public ResponseEntity<ErrorResponseDTO> handleEquipmentHasActiveRentalOrders(RuntimeException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), null);
+    }
+
     private ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus status, String message, List<String> details) {
         ErrorResponseDTO body = ErrorResponseDTO.builder()
             .timestamp(Instant.now())

@@ -6,13 +6,11 @@ import com.br.kesyo.carmoloc_api.dtos.equipment.EquipmentUnitResponseDTO;
 import com.br.kesyo.carmoloc_api.entities.EquipmentEntity;
 import com.br.kesyo.carmoloc_api.entities.EquipmentUnitEntity;
 import com.br.kesyo.carmoloc_api.enums.EquipmentUnitStatusEnum;
-import com.br.kesyo.carmoloc_api.exceptions.EquipmentNotFoundException;
-import com.br.kesyo.carmoloc_api.exceptions.EquipmentUnitNotFoundException;
-import com.br.kesyo.carmoloc_api.exceptions.InvalidAssetCodeListException;
-import com.br.kesyo.carmoloc_api.exceptions.InvalidPricingConfigurationException;
+import com.br.kesyo.carmoloc_api.exceptions.*;
 import com.br.kesyo.carmoloc_api.mapper.EquipmentMapper;
 import com.br.kesyo.carmoloc_api.repositories.EquipmentRepository;
 import com.br.kesyo.carmoloc_api.repositories.EquipmentUnitRepository;
+import com.br.kesyo.carmoloc_api.repositories.RentalOrderItemRepository;
 import com.br.kesyo.carmoloc_api.services.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +26,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     private final EquipmentRepository equipmentRepository;
     private final EquipmentUnitRepository equipmentUnitRepository;
     private final AssetCodeGenerator assetCodeGenerator;
+    private final RentalOrderItemRepository rentalOrderItemRepository;
 
     @Override
     @Transactional
@@ -113,6 +112,11 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Transactional
     public void delete(UUID id) {
         EquipmentEntity entity = this.findEntityById(id);
+
+        if (this.rentalOrderItemRepository.existsActiveRentalFotEquipment(id)) {
+            throw new EquipmentHasActiveRentalOrdersException(id);
+        }
+
         entity.setActive(false);
 
         List<EquipmentUnitEntity> units = this.equipmentUnitRepository.findByEquipmentIdAndActiveTrue(id);
