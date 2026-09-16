@@ -72,11 +72,6 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), null);
     }
 
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleUsernameNotFound(RuntimeException ex) {
-        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), null);
-    }
-
     @ExceptionHandler(org.springframework.security.core.AuthenticationException.class)
     public ResponseEntity<ErrorResponseDTO> handleAuthenticationException(Exception ex) {
         return buildResponse(HttpStatus.UNAUTHORIZED, "Usuário e/ou senha inválidos", null);
