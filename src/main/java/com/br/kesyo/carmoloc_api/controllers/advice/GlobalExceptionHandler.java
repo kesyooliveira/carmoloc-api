@@ -77,6 +77,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), null);
     }
 
+    @ExceptionHandler(org.springframework.security.core.AuthenticationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAuthenticationException(Exception ex) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, "Usuário e/ou senha inválidos", null);
+    }
+
     private ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus status, String message, List<String> details) {
         ErrorResponseDTO body = ErrorResponseDTO.builder()
             .timestamp(Instant.now())
