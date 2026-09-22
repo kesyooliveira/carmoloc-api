@@ -82,6 +82,16 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), null);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUserNotFound(RuntimeException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler({DuplicateUsernameException.class, DuplicateEmailException.class})
+    public ResponseEntity<ErrorResponseDTO> handleUserConflict(RuntimeException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), null);
+    }
+
     private ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus status, String message, List<String> details) {
         ErrorResponseDTO body = ErrorResponseDTO.builder()
             .timestamp(Instant.now())
