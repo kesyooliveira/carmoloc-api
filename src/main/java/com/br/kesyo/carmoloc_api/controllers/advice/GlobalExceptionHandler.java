@@ -92,6 +92,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), null);
     }
 
+    @ExceptionHandler(SelfDeleteNotAllowedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleSelfDeleteNotAllowed(RuntimeException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), null);
+    }
+
     private ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus status, String message, List<String> details) {
         ErrorResponseDTO body = ErrorResponseDTO.builder()
             .timestamp(Instant.now())
