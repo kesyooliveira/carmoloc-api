@@ -1,5 +1,6 @@
 package com.br.kesyo.carmoloc_api.services.impl;
 
+import com.br.kesyo.carmoloc_api.common.PageResponseDTO;
 import com.br.kesyo.carmoloc_api.dtos.client.ClientRequestDTO;
 import com.br.kesyo.carmoloc_api.dtos.client.ClientResponseDTO;
 import com.br.kesyo.carmoloc_api.entities.ClientEntity;
@@ -9,6 +10,8 @@ import com.br.kesyo.carmoloc_api.mapper.ClientMapper;
 import com.br.kesyo.carmoloc_api.repositories.ClientRepository;
 import com.br.kesyo.carmoloc_api.services.ClientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,11 +60,9 @@ public class ClientServiceImpl implements ClientService {
     // lista todos os clientes ativos
     @Override
     @Transactional(readOnly = true)
-    public List<ClientResponseDTO> findAllActive() {
-        return clientRepository.findByActiveTrue()
-                .stream()
-                .map(ClientMapper::toResponseDTO)
-                .toList();
+    public PageResponseDTO<ClientResponseDTO> findAllActive(Pageable pageable) {
+        Page<ClientEntity> page = this.clientRepository.findByActiveTrue(pageable);
+        return PageResponseDTO.from(page, ClientMapper::toResponseDTO);
     }
 
     // soft-delete

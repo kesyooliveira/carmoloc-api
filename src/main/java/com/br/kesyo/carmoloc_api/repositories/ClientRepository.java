@@ -1,6 +1,8 @@
 package com.br.kesyo.carmoloc_api.repositories;
 
 import com.br.kesyo.carmoloc_api.entities.ClientEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,5 +15,5 @@ public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
 
     boolean existsByDocument(String document);
 
-    List<ClientEntity> findByActiveTrue();
+    Page<ClientEntity> findByActiveTrue(Pageable pageable);
 }

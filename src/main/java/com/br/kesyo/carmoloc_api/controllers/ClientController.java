@@ -1,5 +1,6 @@
 package com.br.kesyo.carmoloc_api.controllers;
 
+import com.br.kesyo.carmoloc_api.common.PageResponseDTO;
 import com.br.kesyo.carmoloc_api.dtos.client.ClientRequestDTO;
 import com.br.kesyo.carmoloc_api.dtos.client.ClientResponseDTO;
 import com.br.kesyo.carmoloc_api.services.ClientService;
@@ -7,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +40,10 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClientResponseDTO>> findAll() {
-        return ResponseEntity.ok(this.clientService.findAllActive());
+    public ResponseEntity<PageResponseDTO<ClientResponseDTO>> findAll(
+        @PageableDefault(size = 10, sort = "name")Pageable pageable
+    ) {
+        return ResponseEntity.ok(this.clientService.findAllActive(pageable));
     }
 
     @Operation(summary = "Edita um cliente", description = "Valida documento único (CPF/CNPJ) antes de editar")
