@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -33,6 +34,11 @@ public class ClientController {
     @GetMapping("/{id}")
     public ResponseEntity<ClientResponseDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(this.clientService.findById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClientResponseDTO>> findAll() {
+        return ResponseEntity.ok(this.clientService.findAllActive());
     }
 
     @Operation(summary = "Edita um cliente", description = "Valida documento único (CPF/CNPJ) antes de editar")
