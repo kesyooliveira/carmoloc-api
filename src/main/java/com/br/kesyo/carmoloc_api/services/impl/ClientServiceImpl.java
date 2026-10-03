@@ -57,10 +57,18 @@ public class ClientServiceImpl implements ClientService {
         return ClientMapper.toResponseDTO(this.findEntityById(id));
     }
 
-    // lista todos os clientes ativos
     @Override
     @Transactional(readOnly = true)
-    public PageResponseDTO<ClientResponseDTO> findAllActive(Pageable pageable) {
+    public List<ClientResponseDTO> findAllActive() {
+        return this.clientRepository.findByActiveTrue().stream()
+            .map(ClientMapper::toResponseDTO)
+            .toList();
+    }
+
+    // lista todos os clientes ativos com paginação
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponseDTO<ClientResponseDTO> findAllActivePaged(Pageable pageable) {
         Page<ClientEntity> page = this.clientRepository.findByActiveTrue(pageable);
         return PageResponseDTO.from(page, ClientMapper::toResponseDTO);
     }

@@ -16,7 +16,9 @@ public interface ClientService {
 
     ClientResponseDTO findById(UUID id);
 
-    PageResponseDTO<ClientResponseDTO> findAllActive(Pageable pageable);
+    List<ClientResponseDTO> findAllActive();
+
+    PageResponseDTO<ClientResponseDTO> findAllActivePaged(Pageable pageable);
 
     void delete(UUID id);
 }

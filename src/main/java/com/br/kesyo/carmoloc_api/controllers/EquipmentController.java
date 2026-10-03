@@ -1,5 +1,6 @@
 package com.br.kesyo.carmoloc_api.controllers;
 
+import com.br.kesyo.carmoloc_api.common.PageResponseDTO;
 import com.br.kesyo.carmoloc_api.dtos.equipment.AddEquipmentUnitsRequestDTO;
 import com.br.kesyo.carmoloc_api.dtos.equipment.EquipmentRequestDTO;
 import com.br.kesyo.carmoloc_api.dtos.equipment.EquipmentResponseDTO;
@@ -10,6 +11,8 @@ import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +42,13 @@ public class EquipmentController {
     @GetMapping
     public ResponseEntity<List<EquipmentResponseDTO>> findAll() {
         return ResponseEntity.ok(this.equipmentService.findAllActive());
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<PageResponseDTO<EquipmentResponseDTO>> findAllPaged(
+        @PageableDefault(size = 10, sort = "name") Pageable pageable
+    ) {
+        return ResponseEntity.ok(this.equipmentService.findAllActivePaged(pageable));
     }
 
     @PutMapping("/{id}")

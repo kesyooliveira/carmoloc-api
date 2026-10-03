@@ -1,10 +1,14 @@
 package com.br.kesyo.carmoloc_api.controllers;
 
+import com.br.kesyo.carmoloc_api.common.PageResponseDTO;
 import com.br.kesyo.carmoloc_api.dtos.rentalorder.RentalOrderRequestDTO;
 import com.br.kesyo.carmoloc_api.dtos.rentalorder.RentalOrderResponseDTO;
 import com.br.kesyo.carmoloc_api.services.RentalOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +36,14 @@ public class RentalOrderController {
 
     @GetMapping
     public ResponseEntity<List<RentalOrderResponseDTO>> findAll() {
-        return ResponseEntity.ok(this.rentalOrderService.findAll());
+        return ResponseEntity.ok(this.rentalOrderService.findAllActive());
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<PageResponseDTO<RentalOrderResponseDTO>> findAllPaged(
+        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(this.rentalOrderService.findAllActivePaged(pageable));
     }
 
     @PatchMapping("/{id}/confirm")

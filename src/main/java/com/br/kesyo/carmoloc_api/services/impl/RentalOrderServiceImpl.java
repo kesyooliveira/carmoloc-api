@@ -1,5 +1,6 @@
 package com.br.kesyo.carmoloc_api.services.impl;
 
+import com.br.kesyo.carmoloc_api.common.PageResponseDTO;
 import com.br.kesyo.carmoloc_api.dtos.rentalorder.RentalOrderItemRequestDTO;
 import com.br.kesyo.carmoloc_api.dtos.rentalorder.RentalOrderRequestDTO;
 import com.br.kesyo.carmoloc_api.dtos.rentalorder.RentalOrderResponseDTO;
@@ -17,6 +18,8 @@ import com.br.kesyo.carmoloc_api.repositories.RentalOrderRepository;
 import com.br.kesyo.carmoloc_api.services.AvailabilityService;
 import com.br.kesyo.carmoloc_api.services.RentalOrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -174,11 +177,17 @@ public class RentalOrderServiceImpl implements RentalOrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RentalOrderResponseDTO> findAll() {
-        return this.rentalOrderRepository.findAll()
-            .stream()
+    public List<RentalOrderResponseDTO> findAllActive() {
+        return this.rentalOrderRepository.findByActiveTrue().stream()
             .map(RentalOrderMapper::toResponseDTO)
             .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponseDTO<RentalOrderResponseDTO> findAllActivePaged(Pageable pageable) {
+        Page<RentalOrderEntity> page = this.rentalOrderRepository.findByActiveTrue(pageable);
+        return PageResponseDTO.from(page, RentalOrderMapper::toResponseDTO);
     }
 
     private RentalOrderEntity findEntityById(UUID id) {

@@ -40,10 +40,15 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponseDTO<ClientResponseDTO>> findAll(
+    public ResponseEntity<List<ClientResponseDTO>> findAll() {
+        return ResponseEntity.ok(this.clientService.findAllActive());
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<PageResponseDTO<ClientResponseDTO>> findAllPaged(
         @PageableDefault(size = 10, sort = "name")Pageable pageable
     ) {
-        return ResponseEntity.ok(this.clientService.findAllActive(pageable));
+        return ResponseEntity.ok(this.clientService.findAllActivePaged(pageable));
     }
 
     @Operation(summary = "Edita um cliente", description = "Valida documento único (CPF/CNPJ) antes de editar")

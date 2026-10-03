@@ -15,5 +15,7 @@ public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
 
     boolean existsByDocument(String document);
 
+    List<ClientEntity> findByActiveTrue();
+
     Page<ClientEntity> findByActiveTrue(Pageable pageable);
 }

@@ -1,5 +1,6 @@
 package com.br.kesyo.carmoloc_api.services.impl;
 
+import com.br.kesyo.carmoloc_api.common.PageResponseDTO;
 import com.br.kesyo.carmoloc_api.dtos.equipment.EquipmentRequestDTO;
 import com.br.kesyo.carmoloc_api.dtos.equipment.EquipmentResponseDTO;
 import com.br.kesyo.carmoloc_api.dtos.equipment.EquipmentUnitResponseDTO;
@@ -13,6 +14,8 @@ import com.br.kesyo.carmoloc_api.repositories.EquipmentUnitRepository;
 import com.br.kesyo.carmoloc_api.repositories.RentalOrderItemRepository;
 import com.br.kesyo.carmoloc_api.services.EquipmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -102,10 +105,16 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     @Transactional(readOnly = true)
     public List<EquipmentResponseDTO> findAllActive() {
-        return this.equipmentRepository.findByActiveTrue()
-            .stream()
+        return this.equipmentRepository.findByActiveTrue().stream()
             .map(this::toResponseDTO)
             .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponseDTO<EquipmentResponseDTO> findAllActivePaged(Pageable pageable) {
+        Page<EquipmentEntity> page = this.equipmentRepository.findByActiveTrue(pageable);
+        return PageResponseDTO.from(page, this::toResponseDTO);
     }
 
     @Override
